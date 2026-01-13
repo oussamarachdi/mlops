@@ -1,0 +1,13 @@
+.venv/
+__pycache__/
+*.pyc
+.env
+
+# data & models artifacts handled by DVC / MLflow
+data/**
+!data/**/*.dvc
+
+models/exported/
+mlruns/
+artifacts/
+.zen/
