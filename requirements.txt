@@ -3,11 +3,11 @@ pandas
 numpy
 matplotlib
 seaborn
-dvc
+dvc[s3]
 
 mlflow<3.0
 optuna
-zenml
+zenml[server]
 
 fastapi
 uvicorn

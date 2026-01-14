@@ -1,79 +1,113 @@
-# Breast Cancer Classification MLOps
+# End-to-End MLOps Pipeline for Breast Cancer Classification
 
-This project implements an MLOps pipeline for Breast Cancer Classification using scikit-learn, MLflow, Optuna, DVC, MinIO, and FastAPI.
+## Project Overview
+This project demonstrates a comprehensive MLOps lifecycle for a Breast Cancer Classification task. It integrates modern tools for pipeline orchestration, experiment tracking, data versioning, and model serving. The architecture is designed to be scalable, reproducible, and production-ready.
 
-## Prerequisites
+### Key Technologies
+- **Orchestration**: [ZenML](https://zenml.io/)
+- **Experiment Tracking**: [MLflow](https://mlflow.org/)
+- **Artifact Storage**: [MinIO](https://min.io/) (S3-compatible)
+- **Data Versioning**: [DVC](https://dvc.org/)
+- **Hyperparameter Tuning**: [Optuna](https://optuna.org/)
+- **Model Serving**: [FastAPI](https://fastapi.tiangolo.com/)
+- **Containerization**: [Docker](https://www.docker.com/)
 
-- Python 3.9+
+---
+
+## System Architecture
+
+```mermaid
+graph TD
+    A[Raw Data] -->|DVC| B(Data Versioning)
+    B --> C{ZenML Pipeline}
+    C --> D[Baseline Training]
+    C --> E[Optuna HP Tuning]
+    D --> F[MLflow Tracking]
+    E --> F
+    F --> G[MinIO Artifact Store]
+    G --> H[Model Export]
+    H --> I[FastAPI Serving]
+    I --> J[End User / API]
+    
+    subgraph Infrastructure
+        F
+        G
+    end
+```
+
+---
+
+## Implementation Methodology
+
+The project was executed in 12 structured steps, ensuring a robust and verified setup at each stage.
+
+### 1. Environment & Infrastructure
+- **Bootstrap**: Repository and virtual environment setup.
+- **Docker Services**: Orchestrated MinIO, MLflow Server, and ZenML Server using Docker Compose.
+- **Storage**: Configured MinIO buckets for artifact persistence.
+
+### 2. Data & Experiment Management
+- **DVC Integration**: Configured MinIO as a remote for DVC to version the Breast Cancer dataset.
+- **MLflow Configuration**: Established tracking to the Dockerized MLflow server with S3-compatible backend storage.
+
+### 3. Pipeline Orchestration (ZenML)
+Two primary pipelines were implemented:
+1.  **Baseline Pipeline (`v1`)**: Standard Logistic Regression with default parameters.
+2.  **Tuning Pipeline (`v2`)**: Integrated **Optuna** to optimize the `C` parameter and `solver` over 10 trials, achieving an F1-score of **~0.986**.
+
+### 4. Model Versioning & Rollback
+- **Export Logic**: Automated extraction of the best-performing model from MLflow.
+- **Versioning**: Models are stored with version tags (`model_v1.pkl`, `model_v2.pkl`).
+- **Rollback Proof**: A dedicated script (`src/rollback.py`) allows near-instant switching between model versions for the serving layer.
+
+---
+
+## How to Run
+
+### Prerequisites
 - Docker & Docker Compose
-- Git
+- Python 3.13+
 
-## Setup
-
-1.  **Clone the repository:**
-    ```bash
-    git clone <repo_url>
-    cd mlops-mini-project
-    ```
-
-2.  **Install dependencies:**
-    It is recommended to use a virtual environment.
-    ```bash
-    python -m venv .venv
-    # Windows
-    .\.venv\Scripts\activate
-    # Linux/Mac
-    source .venv/bin/activate
-
-    pip install -r requirements.txt
-    ```
-
-3.  **Start Infrastructure:**
-    Start MinIO (S3 artifact store) and MLflow Tracking Server.
-    ```bash
-    docker compose up -d --build
-    ```
-    - **MinIO Console**: http://localhost:9001 (User: `minio`, Pass: `minio12345`)
-    - **MLflow UI**: http://localhost:5000
-
-## Training
-
-The training pipeline is managed by DVC.
-
-To run the full training pipeline (including Optuna hyperparameter tuning):
+### 1. Start Infrastructure
 ```bash
-dvc repro
+docker compose up -d
 ```
 
-Alternatively, you can run the script manually:
+### 2. Run Pipelines
 ```bash
-# Baseline model (v1)
-python src/train.py --mode v1
+# Activate environment
+source venv/bin/activate
 
-# Tuned model (v2)
-python src/train.py --mode v2
+# Run Baseline
+python pipelines/zenml_pipeline.py
+
+# Run Optuna Tuning
+python pipelines/zenml_tuning_pipeline.py
 ```
 
-Training metrics and artifacts are logged to MLflow.
-
-## Serving
-
-The FastAPI service serves the latest trained model.
-
-- **API URL**: http://localhost:8000
-- **Docs**: http://localhost:8000/docs
-
-### API Endpoints
-
-- `GET /health`: Check service health.
-- `GET /version`: Get loaded model version.
-- `POST /predict`: Make a prediction.
-- `POST /reload`: Reload the model from disk (useful after retraining).
-
-### Example Prediction
-
+### 3. Model Management
 ```bash
-curl -X POST "http://localhost:8000/predict" \
-     -H "Content-Type: application/json" \
-     -d '{"features": [17.99, 10.38, 122.8, 1001.0, 0.1184, 0.2776, 0.3001, 0.1471, 0.2419, 0.07871, 1.095, 0.9053, 8.589, 153.4, 0.006399, 0.04904, 0.05373, 0.01587, 0.03003, 0.006193, 25.38, 17.33, 184.6, 2019.0, 0.1622, 0.6656, 0.7119, 0.2654, 0.4601, 0.1189]}'
+# Export best model from MLflow
+python src/export_best_model.py
+
+# Rollback to v1
+python -m src.rollback --version v1
 ```
+
+### 4. Serving
+The API starts automatically with Docker, or can be run locally:
+```bash
+uvicorn src.api:app --host 0.0.0.0 --port 8000
+```
+
+---
+
+## Results & Deliverables
+- **Reproducibility**: Entire pipeline from data loading to serving is automated.
+- **Visibility**: All trials and artifacts are visible in the MLflow UI (http://localhost:5000) and ZenML Dashboard (http://localhost:8237).
+- **Scalability**: The use of S3-compatible storage and centralized tracking allows for team-based collaboration.
+
+---
+**Author**: Oussama Rachdi  
+**Course**: MLOps Mini-Project  
+**Date**: January 2026
