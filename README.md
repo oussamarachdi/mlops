@@ -11,6 +11,7 @@ This project demonstrates a comprehensive MLOps lifecycle for a Breast Cancer Cl
 - **Hyperparameter Tuning**: [Optuna](https://optuna.org/)
 - **Model Serving**: [FastAPI](https://fastapi.tiangolo.com/)
 - **UI Dashboard**: [Streamlit](https://streamlit.io/)
+- **CI/CD**: [GitHub Actions](https://github.com/features/actions)
 - **Containerization**: [Docker](https://www.docker.com/)
 
 ---
@@ -40,7 +41,7 @@ graph TD
 
 ## Implementation Methodology
 
-The project was executed in 12 structured steps, ensuring a robust and verified setup at each stage.
+The project was executed in structured steps, ensuring a robust and verified setup at each stage.
 
 ### 1. Environment & Infrastructure
 - **Bootstrap**: Repository and virtual environment setup.
@@ -112,6 +113,7 @@ streamlit run src/app.py
 - **Reproducibility**: Entire pipeline from data loading to serving is automated.
 - **Visibility**: All trials and artifacts are visible in the MLflow UI (http://localhost:5000) and ZenML Dashboard (http://localhost:8237).
 - **Scalability**: The use of S3-compatible storage and centralized tracking allows for team-based collaboration.
+- **CI/CD**: Automated linting, testing, and Docker builds via **GitHub Actions**.
 
 ---
 **Author**: Oussama Rachdi  
