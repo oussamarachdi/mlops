@@ -31,11 +31,6 @@ def hp_tuning_step(X: pd.DataFrame, y: pd.Series) -> dict:
             "solver": trial.suggest_categorical("solver", ["liblinear", "lbfgs"])
         }
         
-        # ZenML's MLflow integration handles the parent run.
-        # We can use nested runs for trials if we want, but let's keep it simple
-        # and just log the trials as part of the parent run or separate runs.
-        # For now, let's just log metrics for each trial.
-        
         model = Pipeline([
             ("scaler", StandardScaler()),
             ("clf", LogisticRegression(

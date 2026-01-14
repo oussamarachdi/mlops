@@ -23,3 +23,5 @@ sqlmodel
 passlib
 pymysql
 bcrypt
+streamlit
+requests

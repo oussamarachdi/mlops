@@ -10,6 +10,7 @@ This project demonstrates a comprehensive MLOps lifecycle for a Breast Cancer Cl
 - **Data Versioning**: [DVC](https://dvc.org/)
 - **Hyperparameter Tuning**: [Optuna](https://optuna.org/)
 - **Model Serving**: [FastAPI](https://fastapi.tiangolo.com/)
+- **UI Dashboard**: [Streamlit](https://streamlit.io/)
 - **Containerization**: [Docker](https://www.docker.com/)
 
 ---
@@ -94,10 +95,15 @@ python src/export_best_model.py
 python -m src.rollback --version v1
 ```
 
-### 4. Serving
+### 4. Serving & UI
 The API starts automatically with Docker, or can be run locally:
 ```bash
 uvicorn src.api:app --host 0.0.0.0 --port 8000
+```
+
+To start the Streamlit Dashboard:
+```bash
+streamlit run src/app.py
 ```
 
 ---
