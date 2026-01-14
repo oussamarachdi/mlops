@@ -1,0 +1,8 @@
+stages:
+  train:
+    cmd: python src/train.py --mode v2
+    deps:
+      - src/train.py
+      - data/raw/breast_cancer.csv
+    outs:
+      - models/exported/model_v2.pkl
