@@ -1,5 +1,10 @@
 # End-to-End MLOps Pipeline for Breast Cancer Classification
 
+**Author**: Oussama Rachdi - MOhamed Jarboui
+**Groupe**: Data Science G3
+**Course**: MLOps Mini-Project  
+**Date**: January 2026
+---------------------
 ## Project Overview
 This project demonstrates a comprehensive MLOps lifecycle for a Breast Cancer Classification task. It integrates modern tools for pipeline orchestration, experiment tracking, data versioning, and model serving. The architecture is designed to be scalable, reproducible, and production-ready.
 
@@ -115,7 +120,4 @@ streamlit run src/app.py
 - **Scalability**: The use of S3-compatible storage and centralized tracking allows for team-based collaboration.
 - **CI/CD**: Automated linting, testing, and Docker builds via **GitHub Actions**.
 
----
-**Author**: Oussama Rachdi  
-**Course**: MLOps Mini-Project  
-**Date**: January 2026
+
